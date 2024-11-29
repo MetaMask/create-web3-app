@@ -1,0 +1,40 @@
+{
+  "name": "@metamask/create-web3-app",
+  "type": "module",
+  "module": "dist/index.js",
+  "bin": {
+    "create-web3-app": "./dist/index.js"
+  },
+  "version": "1.5.7",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "tsc -w",
+    "link-cli": "yarn unlink --global create-web3-template && yarn link --global create-web3-app",
+    "test": "vitest"
+  },
+  "keywords": [
+    "wagmi",
+    "web3",
+    "viem",
+    "consensys",
+    "metamask",
+    "next",
+    "react",
+    "typescript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "commander": "12.0.0",
+    "fs": "0.0.1-security",
+    "inquirer": "9.2.15",
+    "memfs": "^4.9.3"
+  },
+  "devDependencies": {
+    "@types/inquirer": "9.0.7",
+    "@types/node": "20.11.25",
+    "typescript": "5.4.2",
+    "vitest": "^1.5.0"
+  }
+}
