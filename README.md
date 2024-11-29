@@ -1,4 +1,4 @@
-# Create Web3 Template CLI
+# Create Web3 App CLI
 
 This is a CLI tool that scaffolds Next.js and React projects with a focus on Web3 development.
 
@@ -21,13 +21,13 @@ To create a new project using the Web3 Template CLI, run one of the following co
 Using **pnpm**:
 
 ```bash
-pnpm create @consensys/create-web3-template [project-name]
+pnpm create @metamask/create-web3-app [project-name]
 ```
 
 Using **npx**:
 
 ```bash
-npx @consensys/create-web3-template [project-name]
+npx @metamask/create-web3-app [project-name]
 ```
 
 ### Interactive Setup
@@ -42,7 +42,7 @@ After running the command, the CLI will guide you through the setup process with
 ### Example
 
 ```bash
-npx @consensys/create-web3-template my-web3-project
+npx @metamask/create-web3-app my-web3-project
 ```
 
 ## Project Structure
