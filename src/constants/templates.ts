@@ -11,10 +11,4 @@ export const TEMPLATES = [
     repo_url: "https://github.com/Consensys/react-web3-starter.git",
     packageName: "@consensys/react-web3-starter",
   },
-  {
-    name: "React/Vite and foundry starter",
-    id: "foundry-starter",
-    repo_url: "https://github.com/cxalem/foundry-template",
-    packageName: "@consensys/foundry-template",
-  },
 ] as const;

@@ -127,7 +127,7 @@ const createHardhatProject = async (options: ProjectOptions) => {
 
   await initializeMonorepo(options);
   await execAsync(
-    `git clone https://github.com/cxalem/hardhat-template.git ${path.join(
+    `git clone https://github.com/Consensys/hardhat-template.git ${path.join(
       projectName,
       "packages",
       "blockchain"

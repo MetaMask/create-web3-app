@@ -10,7 +10,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsc -w",
-    "link-cli": "yarn unlink --global create-web3-template && yarn link --global create-web3-app",
+    "link-cli": "yarn unlink --global create-web3-app && yarn link --global create-web3-app",
     "test": "vitest"
   },
   "keywords": [
