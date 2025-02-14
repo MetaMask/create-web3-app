@@ -79,17 +79,16 @@ const promptForProjectDetails = async (args: string): Promise<string> => {
 const promptForOptions = async (args: string) => {
   const projectName = await promptForProjectDetails(args);
   const framework = await promptForFramework();
-  // const tooling = await promptForTooling();
+  const tooling = await promptForTooling();
   const packageManager = await promptForPackageManager();
 
   const options = {
     projectName: projectName,
     framework: FRAMEWORK_CHOICES.find((choice) => choice.name === framework)
       ?.value,
-    // blockchain_tooling: BLOCKCHAIN_TOOLING_CHOICES.find(
-    //   (choice) => choice.name === tooling
-    // )?.value,
-    blockchain_tooling: "",
+    blockchain_tooling: BLOCKCHAIN_TOOLING_CHOICES.find(
+      (choice) => choice.name === tooling
+    )?.value,
     packageManager: PACAKGE_MANAGER_CHOICES.find(
       (choice) => choice.name === packageManager
     )?.value!,

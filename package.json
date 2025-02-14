@@ -3,10 +3,10 @@
   "type": "module",
   "module": "dist/index.js",
   "bin": {
-    "create-web3-app": "./dist/index.js"
+    "create-web3-app": "dist/index.js"
   },
-  "version": "1.5.7",
-  "description": "",
+  "version": "1.0.0",
+  "description": "CLI tool for generating Web3 starter projects, streamlining the setup of monorepo structures with a frontend (Next.js or React) and blockchain tooling (HardHat or Foundry). It leverages the commander library for command-line interactions and guides users through selecting a framework, package manager (npm, yarn, pnpm), and blockchain stack.",
   "main": "index.js",
   "scripts": {
     "dev": "tsc -w",
@@ -23,8 +23,8 @@
     "react",
     "typescript"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "cxalem",
+  "license": "MIT",
   "dependencies": {
     "commander": "12.0.0",
     "fs": "0.0.1-security",
@@ -36,5 +36,13 @@
     "@types/node": "20.11.25",
     "typescript": "5.4.2",
     "vitest": "^1.5.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MetaMask/create-web3-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MetaMask/create-web3-app/issues"
+  },
+  "homepage": "https://github.com/MetaMask/create-web3-app#readme"
 }
