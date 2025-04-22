@@ -1,9 +1,8 @@
 export const TEMPLATES = [
   {
-    name: "Next Web3 Starter",
-    id: "next-web3-starter",
-    repo_url: "https://github.com/Consensys/next-web3-starter.git",
-    packageName: "@consensys/web3-starter",
+    name: "Next.js Quickstart (MetaMask SDK Example)",
+    id: "next-sdk-quickstart",
+    degitSource: "MetaMask/metamask-sdk-examples/examples/quickstart",
   },
   {
     name: "React Web3 Starter",

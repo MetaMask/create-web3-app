@@ -14,5 +14,6 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node16"
   },
-  "include": ["**/*.ts", "**/*.tsx", "types.d.ts", "src"]
+  "include": ["**/*.ts", "**/*.tsx", "types.d.ts", "src"],
+  "exclude": ["node_modules", "dist", "src/legacy_code"]
 }

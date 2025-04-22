@@ -13,7 +13,6 @@ import {
   createNoise,
   createArrow,
   createMetamaskLogo,
-  updateTailwindConfig,
   createComponentsFolder,
   createUtils,
 } from "./index.js";
@@ -56,8 +55,6 @@ export const createNextApp = async (
     await createProvider(projectPathOrName);
     await createWagmiConfigFile(projectPathOrName, true);
     await createUtils(projectPathOrName);
-    await updateGlobalStyles(projectPathOrName);
-    await updateTailwindConfig(projectPathOrName);
     await addShadcnButton(projectPathOrName);
     await addShadcnCard(projectPathOrName);
     await addShadcnDropdownMenu(projectPathOrName);
@@ -67,6 +64,7 @@ export const createNextApp = async (
     await createMetamaskLogo(projectPathOrName);
     await createHero(projectPathOrName);
     await createNavbar(projectPathOrName);
+    await updateGlobalStyles(projectPathOrName);
     await updatePageFile(projectPathOrName);
 
     console.log("Next.js project created successfully!");
@@ -196,119 +194,119 @@ const updatePageFile = async (projectPath: string) => {
   await fs.writeFile(
     pageFilePath,
     `
-import { Separator } from "@/src/components/ui/separator";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
-import { ArrowRight } from "lucide-react";
-import { Hero } from "@/src/components/Hero";
-
-export default function Home() {
-  return (
-    <main className="">
-      <div className="flex flex-col gap-8 items-center sm:items-start w-full px-3 md:px-0">
-        <Hero />
-
-        <Separator className="w-full my-14 opacity-15" />
-
-        <section className="flex flex-col items-center md:flex-row gap-10 w-full justify-center max-w-5xl">
-          <div className="flex flex-col gap-10">
-            {/* Docs Card */}
-            <a
-              href="https://docs.metamask.io/sdk/"
-              target="_blank"
-              className="relative bg-indigo-500 rounded-tr-sm rounded-bl-sm rounded-tl-xl rounded-br-xl bg-opacity-40 max-w-md text-white border-none transition-colors h-full"
-            >
-              <div className="bg-indigo-500 bg-opacity-20 h-[107%] w-[104%] rounded-xl -z-20 absolute right-0 bottom-0"></div>
-              <div className="bg-indigo-500 bg-opacity-20 h-[107%] w-[104%] rounded-xl -z-20 absolute top-0 left-0"></div>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-2xl">
-                  Docs
-                  <ArrowRight className="h-5 w-5" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg text-indigo-100">
-                  Find in-depth information about the SDK features
-                </p>
-              </CardContent>
-            </a>
-
-            {/* Get ETH Card */}
-            <a
-              href="https://docs.metamask.io/developer-tools/faucet/"
-              target="_blank"
-              className="bg-teal-300 bg-opacity-60 rounded-tr-sm rounded-bl-sm rounded-tl-xl rounded-br-xl relative max-w-md h-full text-white border-none transition-colors"
-            >
-              <div className="bg-teal-300 bg-opacity-20 h-[107%] w-[104%] rounded-xl -z-20 absolute right-0 bottom-0"></div>
-              <div className="bg-teal-300 bg-opacity-20 h-[107%] w-[104%] rounded-xl -z-20 absolute top-0 left-0"></div>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-2xl">
-                  Get ETH on testnet
-                  <ArrowRight className="h-5 w-5" />
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-lg text-emerald-100">
-                  Get testnet tokens to use when testing your smart contracts.
-                </p>
-              </CardContent>
-            </a>
+    import { Separator } from "@/src/components/ui/separator";
+    import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui/card";
+    import { ArrowRight } from "lucide-react";
+    import { Hero } from "@/src/components/Hero";
+    
+    export default function Home() {
+      return (
+        <main className="">
+          <div className="flex flex-col gap-8 items-center sm:items-start w-full px-3 md:px-0">
+            <Hero />
+    
+            <Separator className="w-full my-14 opacity-15" />
+    
+            <section className="flex flex-col items-center md:flex-row gap-10 w-full justify-center max-w-5xl">
+              <div className="flex flex-col gap-10">
+                {/* Docs Card */}
+                <a
+                  href="https://docs.metamask.io/sdk/"
+                  target="_blank"
+                  className="relative bg-indigo-500 rounded-tr-sm rounded-bl-sm rounded-tl-xl rounded-br-xl bg-opacity-40 max-w-md text-white border-none transition-colors h-full"
+                >
+                  <div className="bg-indigo-500/20 h-[107%] w-[104%] rounded-xl -z-20 absolute right-0 bottom-0"></div>
+                  <div className="bg-indigo-500/20 h-[107%] w-[104%] rounded-xl -z-20 absolute top-0 left-0"></div>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-2xl">
+                      Docs
+                      <ArrowRight className="h-5 w-5" />
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-lg text-indigo-100">
+                      Find in-depth information about the SDK features
+                    </p>
+                  </CardContent>
+                </a>
+    
+                {/* Get ETH Card */}
+                <a
+                  href="https://docs.metamask.io/developer-tools/faucet/"
+                  target="_blank"
+                  className="bg-teal-300 bg-opacity-60 rounded-tr-sm rounded-bl-sm rounded-tl-xl rounded-br-xl relative max-w-md h-full text-white border-none transition-colors"
+                >
+                  <div className="bg-teal-300/20 h-[107%] w-[104%] rounded-xl -z-20 absolute right-0 bottom-0"></div>
+                  <div className="bg-teal-300/20 h-[107%] w-[104%] rounded-xl -z-20 absolute top-0 left-0"></div>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-2xl">
+                      Get ETH on testnet
+                      <ArrowRight className="h-5 w-5" />
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-lg text-emerald-100">
+                      Get testnet tokens to use when testing your smart contracts.
+                    </p>
+                  </CardContent>
+                </a>
+              </div>
+    
+              <Card className="relative bg-pink-500 bg-opacity-35 rounded-tr-sm rounded-bl-sm text-white border-none h-full w-full max-w-xl self-start h-[360px]">
+                <div className="bg-pink-500/20 h-[104%] w-[103%] md:h-[103%] md:w-[102%] rounded-xl -z-20 absolute right-0 bottom-0"></div>
+                <div className="bg-pink-500/20 h-[104%] w-[103%] md:h-[103%] md:w-[102%] rounded-xl -z-20 absolute top-0 left-0"></div>
+                <CardHeader>
+                  <CardTitle className="text-2xl">
+                    Add your own functionality
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-7">
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-semibold">Guides</h3>
+                    <div className="space-y-2">
+                      {[
+                        {url: "https://docs.metamask.io/sdk/guides/network-management/", text: "Manage Networks"},
+                        {url: "https://docs.metamask.io/sdk/guides/transaction-handling/", text: "Handle Transactions"},
+                        {url: "https://docs.metamask.io/sdk/guides/interact-with-contracts/", text: "Interact with Smart Contracts"},
+                      ].map((item) => (
+                        <a
+                          href={item.url}
+                          key={item.text}
+                          target="_blank"
+                          className="flex items-center gap-2 w-fit text-white text-opacity-80 cursor-pointer transition-colors"
+                        >
+                          <span className="hover:mr-1 duration-300">{item.text}</span>
+                          <ArrowRight className="h-5 w-5" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-lg font-semibold">Examples</h3>
+                    <div className="space-y-1">
+                      {[
+                        {url: "https://github.com/MetaMask/metamask-sdk-examples/tree/main/examples/quickstart", text: "Next.js + Wagmi"},
+                      ].map((item) => (
+                        <a
+                          href={item.url}
+                          key={item.text}
+                          target="_blank"
+                          className="flex items-center gap-2 w-fit text-white text-opacity-80 cursor-pointer transition-colors"
+                        >
+                          <span className="hover:mr-1 duration-300">{item.text}</span>
+                          <ArrowRight className="h-5 w-5" />
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </section>
           </div>
-
-          <Card className="relative bg-pink-500 bg-opacity-35 rounded-tr-sm rounded-bl-sm text-white border-none h-full w-full max-w-xl self-start h-[360px]">
-            <div className="bg-pink-500 bg-opacity-20 h-[104%] w-[103%] md:h-[103%] md:w-[102%] rounded-xl -z-20 absolute right-0 bottom-0"></div>
-            <div className="bg-pink-500 bg-opacity-20 h-[104%] w-[103%] md:h-[103%] md:w-[102%] rounded-xl -z-20 absolute top-0 left-0"></div>
-            <CardHeader>
-              <CardTitle className="text-2xl">
-                Add your own functionality
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-7">
-              <div className="space-y-1">
-                <h3 className="text-lg font-semibold">Guides</h3>
-                <div className="space-y-2">
-                  {[
-                    {url: "https://docs.metamask.io/sdk/guides/network-management/", text: "Manage Networks"},
-                    {url: "https://docs.metamask.io/sdk/guides/transaction-handling/", text: "Handle Transactions"},
-                    {url: "https://docs.metamask.io/sdk/guides/interact-with-contracts/", text: "Interact with Smart Contracts"},
-                  ].map((item) => (
-                    <a
-                      href={item.url}
-                      key={item.text}
-                      target="_blank"
-                      className="flex items-center gap-2 w-fit text-white text-opacity-80 cursor-pointer transition-colors"
-                    >
-                      <span className="hover:mr-1 duration-300">{item.text}</span>
-                      <ArrowRight className="h-5 w-5" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <h3 className="text-lg font-semibold">Examples</h3>
-                <div className="space-y-1">
-                  {[
-                    {url: "https://github.com/MetaMask/metamask-sdk-examples/tree/main/examples/quickstart", text: "Next.js + Wagmi"},
-                  ].map((item) => (
-                    <a
-                      href={item.url}
-                      key={item.text}
-                      target="_blank"
-                      className="flex items-center gap-2 w-fit text-white text-opacity-80 cursor-pointer transition-colors"
-                    >
-                      <span className="hover:mr-1 duration-300">{item.text}</span>
-                      <ArrowRight className="h-5 w-5" />
-                    </a>
-                  ))}
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-      </div>
-    </main>
-  );
-}
-    `
+        </main>
+      );
+    }
+ `
   );
 };
 
@@ -466,9 +464,63 @@ const updateGlobalStyles = async (projectPath: string) => {
   await fs.writeFile(
     globalStylesFilePath,
     `
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-animate';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  --color-chart-1: hsl(var(--chart-1));
+  --color-chart-2: hsl(var(--chart-2));
+  --color-chart-3: hsl(var(--chart-3));
+  --color-chart-4: hsl(var(--chart-4));
+  --color-chart-5: hsl(var(--chart-5));
+
+  --background-image-noise: url('/noise.svg');
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
 
 @layer base {
   @font-face {
@@ -530,8 +582,10 @@ const updateGlobalStyles = async (projectPath: string) => {
   }
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+  }
 }
 
 @layer base {

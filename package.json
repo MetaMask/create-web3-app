@@ -27,11 +27,13 @@
   "license": "MIT",
   "dependencies": {
     "commander": "12.0.0",
+    "degit": "^2.8.4",
     "fs": "0.0.1-security",
     "inquirer": "9.2.15",
     "memfs": "^4.9.3"
   },
   "devDependencies": {
+    "@types/degit": "^2.8.6",
     "@types/inquirer": "9.0.7",
     "@types/node": "20.11.25",
     "typescript": "5.4.2",
