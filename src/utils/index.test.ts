@@ -160,6 +160,7 @@ describe("create-web3-app Utils", () => {
     const projectName = "my-project";
     const gitPath = path.join(destinationPath, ".git");
     const packageJsonPath = path.join(destinationPath, "package.json");
+    const options: utils.ProjectOptions = { projectName, templateId: degitTemplate.id, blockchain_tooling: 'none', packageManager: 'yarn' };
 
 
     beforeEach(() => {
@@ -176,7 +177,7 @@ describe("create-web3-app Utils", () => {
 
     // --- Degit Path Tests ---
     it("should call degit factory and clone method for DegitTemplate", async () => {
-      await utils.cloneTemplate(degitTemplate.id, destinationPath, projectName);
+      await utils.cloneTemplate(options, destinationPath);
 
       // Check the factory call
       expect(mockedDegitFactory).toHaveBeenCalledWith(degitTemplate.degitSource, expect.anything());
@@ -189,7 +190,7 @@ describe("create-web3-app Utils", () => {
 
     it("should read, update, and write package.json for DegitTemplate", async () => {
         mockedFsReadFile.mockResolvedValue(JSON.stringify({ name: "old-name", version: "1.0.0" })); // Provide specific content
-        await utils.cloneTemplate(degitTemplate.id, destinationPath, projectName);
+        await utils.cloneTemplate(options, destinationPath);
 
         // Verify degit clone was called first
         expect(mockedDegitClone).toHaveBeenCalled();
@@ -209,7 +210,7 @@ describe("create-web3-app Utils", () => {
         mockedDegitClone.mockRejectedValueOnce(cloneError); // Make degit fail
 
         await expect(
-            utils.cloneTemplate(degitTemplate.id, destinationPath, projectName)
+            utils.cloneTemplate(options, destinationPath)
         ).rejects.toThrow(cloneError);
 
         // Ensure subsequent steps didn't run
@@ -221,7 +222,7 @@ describe("create-web3-app Utils", () => {
         const writeError = new Error("Failed to write file");
         mockedFsWriteFile.mockRejectedValueOnce(writeError); // Fail writing package.json
 
-        await utils.cloneTemplate(degitTemplate.id, destinationPath, projectName);
+        await utils.cloneTemplate(options, destinationPath);
 
         expect(mockedDegitClone).toHaveBeenCalled(); // Ensure clone happened
         expect(mockedFsReadFile).toHaveBeenCalled(); // Read should have happened
@@ -234,7 +235,7 @@ describe("create-web3-app Utils", () => {
 
     // --- Git Clone Path Tests ---
     it("should call git clone with correct arguments for GitTemplate", async () => {
-      await utils.cloneTemplate(gitTemplate.id, destinationPath, projectName);
+      await utils.cloneTemplate(options, destinationPath);
 
       expect(mockedExecAsync).toHaveBeenCalledWith(
         `git clone ${gitTemplate.repo_url} ${destinationPath}`
@@ -244,7 +245,7 @@ describe("create-web3-app Utils", () => {
     });
 
     it("should remove the .git directory after cloning for GitTemplate", async () => {
-      await utils.cloneTemplate(gitTemplate.id, destinationPath, projectName);
+      await utils.cloneTemplate(options, destinationPath);
 
       expect(mockedExecAsync).toHaveBeenCalled(); // Ensure clone happened
       expect(mockedFsRm).toHaveBeenCalledWith(gitPath, {
@@ -255,7 +256,7 @@ describe("create-web3-app Utils", () => {
 
      it("should read, update, and write package.json for GitTemplate", async () => {
         mockedFsReadFile.mockResolvedValue(JSON.stringify({ name: "old-name", version: "1.0.0" }));
-        await utils.cloneTemplate(gitTemplate.id, destinationPath, projectName);
+        await utils.cloneTemplate(options, destinationPath);
 
         // Verify clone happened first
         expect(mockedExecAsync).toHaveBeenCalled();
@@ -276,7 +277,7 @@ describe("create-web3-app Utils", () => {
       mockedExecAsync.mockRejectedValueOnce(cloneError); // Make git clone fail
 
       await expect(
-        utils.cloneTemplate(gitTemplate.id, destinationPath, projectName)
+        utils.cloneTemplate(options, destinationPath)
       ).rejects.toThrow(cloneError);
 
       // Ensure subsequent steps didn't run
@@ -287,7 +288,7 @@ describe("create-web3-app Utils", () => {
     // --- Common Tests ---
     it("should throw error if templateId is not found", async () => {
       await expect(
-        utils.cloneTemplate("invalid-id", destinationPath, projectName)
+        utils.cloneTemplate(options, destinationPath)
       ).rejects.toThrow('Template with id "invalid-id" not found.');
        expect(mockedExecAsync).not.toHaveBeenCalled();
        expect(mockedDegitClone).not.toHaveBeenCalled(); // Check clone mock here

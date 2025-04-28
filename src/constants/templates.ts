@@ -10,4 +10,10 @@ export const TEMPLATES = [
     repo_url: "https://github.com/Consensys/react-web3-starter.git",
     packageName: "@consensys/react-web3-starter",
   },
+  {
+    name: "MetaMask <-> Dynamic Quickstart",
+    id: "metamask-dynamic",
+    repo_url: "https://github.com/MetaMask/metamask-dynamic.git",
+    packageName: "metamask-dynamic",
+  },
 ] as const;

@@ -14,4 +14,5 @@ type ProjectOptions = {
   framework: "react" | "nextjs" | undefined;
   blockchain_tooling: "hardhat" | "foundry" | "none" | undefined;
   packageManager: "yarn" | "npm" | "pnpm";
+  dynamicEnvId?: string;
 };

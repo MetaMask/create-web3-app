@@ -1,11 +1,11 @@
 {
-  "name": "@metamask/create-web3-app",
+  "name": "@consensys/create-web3-app",
   "type": "module",
   "module": "dist/index.js",
   "bin": {
     "create-web3-app": "dist/index.js"
   },
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "CLI tool for generating Web3 starter projects, streamlining the setup of monorepo structures with a frontend (Next.js or React) and blockchain tooling (HardHat or Foundry). It leverages the commander library for command-line interactions and guides users through selecting a framework, package manager (npm, yarn, pnpm), and blockchain stack.",
   "main": "index.js",
   "scripts": {
@@ -26,11 +26,13 @@
   "author": "cxalem",
   "license": "MIT",
   "dependencies": {
+    "chalk": "^5.4.1",
     "commander": "12.0.0",
     "degit": "^2.8.4",
     "fs": "0.0.1-security",
     "inquirer": "9.2.15",
-    "memfs": "^4.9.3"
+    "memfs": "^4.9.3",
+    "ora": "^8.2.0"
   },
   "devDependencies": {
     "@types/degit": "^2.8.6",

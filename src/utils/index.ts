@@ -11,11 +11,21 @@ import path from "path";
 import util from "util";
 import inquirer from "inquirer";
 import degit from "degit";
+import ora from "ora";
+import chalk from "chalk";
 
 export const execAsync = util.promisify(exec);
 
 const promptForFramework = async (): Promise<string> => {
-  const templateChoices = TEMPLATES.map((template) => template.name);
+  const templateChoices = TEMPLATES.map((template) => {
+    if (template.id === "next-sdk-quickstart") {
+      return {
+        name: `${template.name} ${chalk.hex("#FFA500")("(Recommended)")}`,
+        value: template.name,
+      };
+    }
+    return template.name;
+  });
   const { frameworkName }: { frameworkName: string } = await inquirer.prompt([
     {
       type: "list",
@@ -90,6 +100,7 @@ export interface ProjectOptions {
   templateId: string;
   blockchain_tooling: "hardhat" | "foundry" | "none";
   packageManager: "npm" | "yarn" | "pnpm";
+  dynamicEnvId?: string;
 }
 
 export const promptForOptions = async (
@@ -100,6 +111,40 @@ export const promptForOptions = async (
   const tooling = await promptForTooling();
   const packageManager = await promptForPackageManager();
 
+  let dynamicEnvId: string | undefined = undefined;
+
+  if (templateId === "metamask-dynamic") {
+    const { addDynamicIdNow } = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "addDynamicIdNow",
+        message: `The selected template uses Dynamic.xyz. You'll need a Dynamic Environment ID added to a .env file. Would you like to add it now? You can get one from https://app.dynamic.xyz/dashboard/developer/api`,
+        default: true,
+      },
+    ]);
+
+    if (addDynamicIdNow) {
+      const { providedDynamicId } = await inquirer.prompt([
+        {
+          type: "password",
+          name: "providedDynamicId",
+          message: "Please paste your Dynamic Environment ID:",
+          mask: "*",
+          validate: (input) =>
+            input ? true : "Dynamic Environment ID cannot be empty",
+        },
+      ]);
+      dynamicEnvId = providedDynamicId;
+      console.log("Dynamic Environment ID received.");
+    } else {
+      console.log(
+        chalk.yellow(
+          "Okay, please remember to add NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID=<your_id> to the .env file in your site's directory later."
+        )
+      );
+    }
+  }
+
   const options: ProjectOptions = {
     projectName: projectName,
     templateId: templateId,
@@ -109,6 +154,7 @@ export const promptForOptions = async (
     packageManager: PACAKGE_MANAGER_CHOICES.find(
       (choice) => choice.name === packageManager
     )?.value as ProjectOptions["packageManager"],
+    dynamicEnvId: dynamicEnvId,
   };
 
   if (!TEMPLATES.some((t) => t.id === options.templateId)) {
@@ -119,20 +165,25 @@ export const promptForOptions = async (
 };
 
 export const cloneTemplate = async (
-  templateId: string,
-  destinationPath: string,
-  projectName: string
+  options: Pick<
+    ProjectOptions,
+    "templateId" | "projectName" | "dynamicEnvId" | "blockchain_tooling"
+  >,
+  destinationPath: string
 ) => {
+  const { templateId, projectName, dynamicEnvId, blockchain_tooling } = options;
   const template = TEMPLATES.find((t) => t.id === templateId);
   if (!template) {
     throw new Error(`Template with id "${templateId}" not found.`);
   }
 
+  const spinner = ora(
+    `Preparing template "${template.name}" into ${destinationPath}...`
+  ).start();
+
   try {
     if (isDegitTemplate(template)) {
-      console.log(
-        `Cloning template "${template.name}" from ${template.degitSource} using degit...`
-      );
+      spinner.text = `Cloning template "${template.name}" from ${template.degitSource} using degit...`;
       const emitter = degit(template.degitSource, {
         cache: false,
         force: true,
@@ -141,23 +192,28 @@ export const cloneTemplate = async (
 
       await emitter.clone(destinationPath);
     } else if (isGitTemplate(template)) {
-      console.log(
-        `Cloning template "${template.name}" from ${template.repo_url} using git...`
-      );
+      spinner.text = `Cloning template "${template.name}" from ${template.repo_url} using git...`;
       await execAsync(`git clone ${template.repo_url} ${destinationPath}`);
       await fs.rm(path.join(destinationPath, ".git"), {
         recursive: true,
         force: true,
       });
     } else {
+      spinner.fail(`Template preparation failed.`);
       throw new Error(`Template has neither repo_url nor degitSource defined.`);
     }
 
     const packageJsonPath = path.join(destinationPath, "package.json");
     try {
+      spinner.text = `Updating package name to ${path.basename(
+        projectName
+      )}...`;
       const packageJsonContent = await fs.readFile(packageJsonPath, "utf-8");
       const packageJson = JSON.parse(packageJsonContent);
       packageJson.name = path.basename(projectName);
+      if (blockchain_tooling !== "none") {
+        packageJson.name = `site`;
+      }
       const newPackageJsonContent = JSON.stringify(packageJson, null, 2);
       await fs.writeFile(packageJsonPath, newPackageJsonContent, "utf-8");
     } catch (pkgError) {
@@ -168,9 +224,20 @@ export const cloneTemplate = async (
       );
     }
 
-    console.log(`Template "${template.name}" prepared successfully.`);
+    if (dynamicEnvId) {
+      spinner.text = `Creating .env file with Dynamic Environment ID...`;
+      const envContent = `NEXT_PUBLIC_DYNAMIC_ENVIRONMENT_ID=${dynamicEnvId}\n`;
+      const envPath = path.join(destinationPath, ".env");
+      await fs.writeFile(envPath, envContent, "utf-8");
+      spinner.text = `.env file created successfully.`;
+    }
+
+    spinner.succeed(
+      `Template "${template.name}" prepared successfully in ${destinationPath}.`
+    );
   } catch (error) {
-    console.error(`Error preparing template "${template.name}":`, error);
+    spinner.fail(`Error preparing template "${template.name}".`);
+    console.error(`Error details:`, error);
     throw error;
   }
 };
@@ -233,9 +300,13 @@ export const createHardhatProject = async (options: ProjectOptions) => {
   });
 
   await cloneTemplate(
-    templateId,
-    path.join(projectName, "packages", "site"),
-    projectName
+    {
+      templateId,
+      projectName,
+      dynamicEnvId: options.dynamicEnvId,
+      blockchain_tooling: "hardhat",
+    },
+    path.join(projectName, "packages", "site")
   );
 
   console.log("Hardhat project setup complete.");
@@ -252,9 +323,13 @@ export const createFoundryProject = async (options: ProjectOptions) => {
   await execAsync(`cd ${blockchainPath} && forge init . --no-commit`);
 
   await cloneTemplate(
-    templateId,
-    path.join(projectName, "packages", "site"),
-    projectName
+    {
+      templateId,
+      projectName,
+      dynamicEnvId: options.dynamicEnvId,
+      blockchain_tooling: "foundry",
+    },
+    path.join(projectName, "packages", "site")
   );
 
   console.log("Foundry project setup complete.");
@@ -263,27 +338,34 @@ export const createFoundryProject = async (options: ProjectOptions) => {
 export const createProject = async (args: string) => {
   const options = await promptForOptions(args);
   const installCommand = `${options.packageManager} install`;
+  const mainSpinner = ora("Setting up your Web3 project...").start();
 
   try {
     if (options.blockchain_tooling === "hardhat") {
+      mainSpinner.text = "Creating Hardhat project structure...";
       await createHardhatProject(options);
     } else if (options.blockchain_tooling === "foundry") {
+      mainSpinner.text = "Creating Foundry project structure...";
       await createFoundryProject(options);
     } else {
+      mainSpinner.text = "Cloning base template...";
       await cloneTemplate(
-        options.templateId,
-        options.projectName,
+        {
+          templateId: options.templateId,
+          projectName: options.projectName,
+          dynamicEnvId: options.dynamicEnvId,
+          blockchain_tooling: "none",
+        },
         options.projectName
       );
     }
 
-    console.log(
-      `\nProject setup complete. Installing dependencies using ${options.packageManager}...`
-    );
+    mainSpinner.text = `Installing dependencies using ${options.packageManager}... (This may take a few minutes)`;
     const projectPath = options.projectName;
     await execAsync(`cd ${projectPath} && ${installCommand}`);
 
-    console.log("\nDependencies installed successfully!");
+    mainSpinner.succeed("Project setup complete!");
+
     console.log(`\nSuccess! Created ${options.projectName}.`);
     console.log("Inside that directory, you can run several commands:");
 
@@ -303,6 +385,7 @@ export const createProject = async (args: string) => {
 
     console.log("\nHappy Hacking!");
   } catch (error) {
-    console.error("\nAn error occurred during project creation:", error);
+    mainSpinner.fail("An error occurred during project creation.");
+    console.error("Error details:", error);
   }
 };
