@@ -86,7 +86,16 @@ const promptForProjectDetails = async (args: string): Promise<string> => {
         type: "input",
         name: "projectName",
         message: "Please specify a name for your project: ",
-        validate: (input) => (input ? true : "Project name cannot be empty"),
+        validate: (input) => {
+          if (!input) {
+            return "Project name cannot be empty";
+          }
+          const kebabCaseRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+          if (!kebabCaseRegex.test(input)) {
+            return "Project name must be in kebab-case (e.g., my-awesome-project)";
+          }
+          return true;
+        },
       },
     ]);
     console.log("Creating project with name:", projectName);
