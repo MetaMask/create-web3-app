@@ -32,11 +32,11 @@
     "fs": "0.0.1-security",
     "inquirer": "9.2.15",
     "memfs": "^4.9.3",
-    "ora": "^8.2.0"
+    "ora": "^8.2.0",
+    "@types/degit": "^2.8.6",
+    "degit": "^2.8.4"
   },
   "devDependencies": {
-    "@types/degit": "^2.8.6",
-    "degit": "^2.8.4",
     "@types/inquirer": "9.0.7",
     "@types/node": "20.11.25",
     "typescript": "5.4.2",
