@@ -29,6 +29,8 @@
   "dependencies": {
     "chalk": "^5.4.1",
     "commander": "12.0.0",
+    "degit": "^2.8.4",
+    "@types/degit": "^2.8.6",
     "fs": "0.0.1-security",
     "inquirer": "9.2.15",
     "memfs": "^4.9.3",

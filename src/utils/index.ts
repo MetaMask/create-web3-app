@@ -59,6 +59,14 @@ const promptForTooling = async (): Promise<string> => {
   ]);
   console.log(`Selected tooling: ${tooling}`);
 
+  if (tooling === "Foundry") {
+    console.log(
+      chalk.yellow(
+        "\nNote: Foundry's 'forge' CLI must be installed and in your PATH to use this option."
+      )
+    );
+  }
+
   return tooling;
 };
 
@@ -227,8 +235,7 @@ export const cloneTemplate = async (
       await fs.writeFile(packageJsonPath, newPackageJsonContent, "utf-8");
     } catch (pkgError) {
       console.warn(
-        `Warning: Could not update package.json name in ${destinationPath}. Manual update might be needed. Error: ${
-          pkgError instanceof Error ? pkgError.message : pkgError
+        `Warning: Could not update package.json name in ${destinationPath}. Manual update might be needed. Error: ${pkgError instanceof Error ? pkgError.message : pkgError
         }`
       );
     }
@@ -323,11 +330,27 @@ export const createHardhatProject = async (options: ProjectOptions) => {
 
 export const createFoundryProject = async (options: ProjectOptions) => {
   const { projectName, templateId } = options;
-  console.log("Setting up project with Foundry...");
 
+  try {
+    await execAsync("forge --version");
+    console.log(
+      chalk.green("Foundry (forge) installation verified. Proceeding with setup...")
+    );
+  } catch (error) {
+    console.error(
+      chalk.red(
+        "\nError: Failed to verify Foundry (forge) installation."
+      )
+    );
+    throw new Error(
+      "Forge (Foundry) is not installed or not found in your PATH. Please install it to continue.\nInstallation guide: https://book.getfoundry.sh/getting-started/installation"
+    );
+  }
+
+  console.log("Setting up project with Foundry...");
   await initializeMonorepo(options);
 
-  console.log("Initializing Foundry project...");
+  console.log("Initializing Foundry project with 'forge init'...");
   const blockchainPath = path.join(projectName, "packages", "blockchain");
   await execAsync(`cd ${blockchainPath} && forge init . --no-commit`);
 
@@ -388,7 +411,7 @@ export const createProject = async (args: string) => {
       console.log(`    ${options.packageManager} run test`);
       console.log("      Runs the contract tests.");
     } else {
-      console.log(`\n  ${options.packageManager} run dev`);
+      console.log(`\n  cd packages/site && ${options.packageManager} run dev`);
       console.log("    Starts the development server.");
     }
 
