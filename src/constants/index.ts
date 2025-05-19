@@ -52,3 +52,5 @@ export function isDegitTemplate(template: Template): template is DegitTemplate {
 export function isGitTemplate(template: Template): template is GitTemplate {
   return "repo_url" in template;
 }
+
+export const CLI_VERSION = "1.0.9";

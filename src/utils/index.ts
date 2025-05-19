@@ -6,6 +6,7 @@ import {
   TEMPLATES,
   isDegitTemplate,
   isGitTemplate,
+  CLI_VERSION,
 } from "../constants/index.js";
 import path from "path";
 import util from "util";
@@ -13,6 +14,7 @@ import inquirer from "inquirer";
 import degit from "degit";
 import ora from "ora";
 import chalk from "chalk";
+import { identifyRun, track, flush } from "../analytics/index.js";
 
 export const execAsync = util.promisify(exec);
 
@@ -368,11 +370,16 @@ export const createFoundryProject = async (options: ProjectOptions) => {
 };
 
 export const createProject = async (args: string) => {
+  identifyRun();
   const options = await promptForOptions(args);
   const installCommand = `${options.packageManager} install`;
   const mainSpinner = ora("Setting up your Web3 project...").start();
+  const t0 = Date.now();
 
   try {
+    track("CLI Started", {
+      cli_version: CLI_VERSION,
+    });
     if (options.blockchain_tooling === "hardhat") {
       mainSpinner.text = "Creating Hardhat project structure...";
       await createHardhatProject(options);
@@ -414,10 +421,23 @@ export const createProject = async (args: string) => {
       console.log(`\n  cd packages/site && ${options.packageManager} run dev`);
       console.log("    Starts the development server.");
     }
-
+    track("Project Created", {
+      template_id: options.templateId,
+      blockchain_tooling: options.blockchain_tooling,
+      package_manager: options.packageManager,
+      dynamic_env: Boolean(options.dynamicEnvId),
+      exec_time_ms: Date.now() - t0,
+    });
     console.log("\nHappy Hacking!");
   } catch (error) {
     mainSpinner.fail("An error occurred during project creation.");
+    track("Project Creation Failed", {
+      template_id: options?.templateId,
+      blockchain_tooling: options?.blockchain_tooling,
+      error_message: (error as Error).message,
+    });
     console.error("Error details:", error);
+  } finally {
+    flush();
   }
 };
