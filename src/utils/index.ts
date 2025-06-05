@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import { promises as fs } from "fs";
+import { promises as fs, constants as fsConstants } from "fs";
 import {
   BLOCKCHAIN_TOOLING_CHOICES,
   PACAKGE_MANAGER_CHOICES,
@@ -12,7 +12,7 @@ import path from "path";
 import util from "util";
 import inquirer from "inquirer";
 import degit from "degit";
-import ora from "ora";
+import ora, { Ora } from "ora";
 import chalk from "chalk";
 import { identifyRun, track, flush } from "../analytics/index.js";
 
@@ -20,7 +20,7 @@ export const execAsync = util.promisify(exec);
 
 const promptForFramework = async (): Promise<string> => {
   const templateChoices = TEMPLATES.map((template) => {
-    if (template.id === "next-sdk-quickstart") {
+    if (template.id === "metamask-nextjs-wagmi") {
       return {
         name: `${template.name} ${chalk.hex("#FFA500")("(Recommended)")}`,
         value: template.name,
@@ -237,7 +237,8 @@ export const cloneTemplate = async (
       await fs.writeFile(packageJsonPath, newPackageJsonContent, "utf-8");
     } catch (pkgError) {
       console.warn(
-        `Warning: Could not update package.json name in ${destinationPath}. Manual update might be needed. Error: ${pkgError instanceof Error ? pkgError.message : pkgError
+        `Warning: Could not update package.json name in ${destinationPath}. Manual update might be needed. Error: ${
+          pkgError instanceof Error ? pkgError.message : pkgError
         }`
       );
     }
@@ -288,9 +289,6 @@ export const initializeMonorepo = async (options: ProjectOptions) => {
     JSON.stringify(rootPackageJson, null, 2)
   );
 
-  await fs.mkdir(path.join(projectName, "packages", "blockchain"), {
-    recursive: true,
-  });
   await fs.mkdir(path.join(projectName, "packages", "site"), {
     recursive: true,
   });
@@ -330,20 +328,61 @@ export const createHardhatProject = async (options: ProjectOptions) => {
   console.log("Hardhat project setup complete.");
 };
 
-export const createFoundryProject = async (options: ProjectOptions) => {
+export const createFoundryProject = async (
+  options: ProjectOptions,
+  spinner?: Ora
+) => {
   const { projectName, templateId } = options;
 
+  let forgeAvailable = true;
   try {
     await execAsync("forge --version");
     console.log(
-      chalk.green("Foundry (forge) installation verified. Proceeding with setup...")
-    );
-  } catch (error) {
-    console.error(
-      chalk.red(
-        "\nError: Failed to verify Foundry (forge) installation."
+      chalk.green(
+        "Foundry (forge) installation verified. Proceeding with setup..."
       )
     );
+  } catch (error) {
+    forgeAvailable = false;
+  }
+
+  if (!forgeAvailable) {
+    spinner?.stop();
+
+    console.log(
+      chalk.yellow(
+        "Looks like Foundry is not installed or not found in your PATH."
+      )
+    );
+
+    const { switchToHardhat } = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "switchToHardhat",
+        message: "Would you like to switch to Hardhat instead?",
+        default: true,
+      },
+    ]);
+
+    track("foundry_not_installed", {
+      attempted_blockchain_tooling: "foundry",
+      switched_to_hardhat: switchToHardhat,
+    });
+
+    if (switchToHardhat) {
+      console.log(chalk.blue("Switching to Hardhat setup..."));
+      Object.assign(options, { blockchain_tooling: "hardhat" as const });
+
+      if (spinner) {
+        spinner.text = "Creating Hardhat project structure...";
+        spinner.start();
+      }
+
+      await createHardhatProject(options);
+      return;
+    }
+
+    spinner?.start();
     throw new Error(
       "Forge (Foundry) is not installed or not found in your PATH. Please install it to continue.\nInstallation guide: https://book.getfoundry.sh/getting-started/installation"
     );
@@ -354,6 +393,7 @@ export const createFoundryProject = async (options: ProjectOptions) => {
 
   console.log("Initializing Foundry project with 'forge init'...");
   const blockchainPath = path.join(projectName, "packages", "blockchain");
+  await fs.mkdir(blockchainPath, { recursive: true });
   await execAsync(`cd ${blockchainPath} && forge init . --no-commit`);
 
   await cloneTemplate(
@@ -370,6 +410,21 @@ export const createFoundryProject = async (options: ProjectOptions) => {
 };
 
 export const createProject = async (args: string) => {
+  // First, ensure the current working directory is writable
+  try {
+    await fs.access(process.cwd(), fsConstants.W_OK);
+  } catch {
+    console.error(
+      chalk.red(
+        "The directory you're in is read-only for your user. Please cd to a writable folder (e.g. your home directory) or run the terminal as Administrator."
+      )
+    );
+    track("cwd_not_writable", {
+      cwd: process.cwd(),
+    });
+    return;
+  }
+
   identifyRun();
   const options = await promptForOptions(args);
   const installCommand = `${options.packageManager} install`;
@@ -377,7 +432,7 @@ export const createProject = async (args: string) => {
   const t0 = Date.now();
 
   try {
-    track("CLI Started", {
+    track("cli_started", {
       cli_version: CLI_VERSION,
     });
     if (options.blockchain_tooling === "hardhat") {
@@ -385,7 +440,7 @@ export const createProject = async (args: string) => {
       await createHardhatProject(options);
     } else if (options.blockchain_tooling === "foundry") {
       mainSpinner.text = "Creating Foundry project structure...";
-      await createFoundryProject(options);
+      await createFoundryProject(options, mainSpinner);
     } else {
       mainSpinner.text = "Cloning base template...";
       await cloneTemplate(
@@ -421,7 +476,12 @@ export const createProject = async (args: string) => {
       console.log(`\n  cd packages/site && ${options.packageManager} run dev`);
       console.log("    Starts the development server.");
     }
-    track("Project Created", {
+
+    const userGitEmail = await execAsync("git config user.email");
+
+    console.log("USER GIT EMAIL", userGitEmail)
+
+    track("project_created", {
       template_id: options.templateId,
       blockchain_tooling: options.blockchain_tooling,
       package_manager: options.packageManager,
@@ -431,7 +491,7 @@ export const createProject = async (args: string) => {
     console.log("\nHappy Hacking!");
   } catch (error) {
     mainSpinner.fail("An error occurred during project creation.");
-    track("Project Creation Failed", {
+    track("project_creation_failed", {
       template_id: options?.templateId,
       blockchain_tooling: options?.blockchain_tooling,
       error_message: (error as Error).message,

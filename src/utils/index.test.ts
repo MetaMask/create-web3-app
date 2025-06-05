@@ -154,7 +154,7 @@ describe("create-web3-app Utils", () => {
 
   // --- Test cloneTemplate ---
   describe("cloneTemplate", () => {
-    const degitTemplate = TEMPLATES.find(t => t.id === 'next-sdk-quickstart') as DegitTemplate;
+    const degitTemplate = TEMPLATES.find(t => t.id === 'metamask-nextjs-wagmi') as DegitTemplate;
     // const gitTemplate = TEMPLATES.find(t => t.id === 'react-web3-starter') as GitTemplate; 
     const destinationPath = "/path/to/project";
     const projectName = "my-project";

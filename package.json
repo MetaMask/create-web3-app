@@ -5,7 +5,7 @@
   "bin": {
     "create-web3-app": "dist/index.js"
   },
-  "version": "1.1.0",
+  "version": "1.1.2",
   "description": "CLI tool for generating Web3 starter projects, streamlining the setup of monorepo structures with a frontend (Next.js or React) and blockchain tooling (HardHat or Foundry). It leverages the commander library for command-line interactions and guides users through selecting a framework, package manager (npm, yarn, pnpm), and blockchain stack.",
   "main": "index.js",
   "scripts": {
