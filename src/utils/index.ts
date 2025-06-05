@@ -86,6 +86,46 @@ const promptForPackageManager = async (): Promise<string> => {
   ]);
   console.log(`Selected package manager: ${packageManager}`);
 
+  if (packageManager === "pnpm") {
+    let pnpmAvailable = true;
+    try {
+      await execAsync("pnpm -v");
+    } catch {
+      pnpmAvailable = false;
+    }
+
+    if (!pnpmAvailable) {
+      console.log(
+        chalk.yellow("pnpm is not installed or not found in your PATH.")
+      );
+
+      const { installPnpmNow } = await inquirer.prompt([
+        {
+          type: "confirm",
+          name: "installPnpmNow",
+          message: "Would you like to install pnpm globally using npm now?",
+          default: true,
+        },
+      ]);
+
+      if (installPnpmNow) {
+        try {
+          console.log(chalk.blue("Installing pnpm globally via npm..."));
+          await execAsync("npm install -g pnpm");
+          console.log(chalk.green("pnpm installed successfully."));
+        } catch (installError) {
+          throw new Error(
+            "Failed to install pnpm automatically. Please install it manually and re-run the command."
+          );
+        }
+      } else {
+        throw new Error(
+          "pnpm installation declined. Please install pnpm manually or choose a different package manager."
+        );
+      }
+    }
+  }
+
   return packageManager;
 };
 
@@ -432,6 +472,7 @@ export const createProject = async (args: string) => {
 
   identifyRun();
   const options = await promptForOptions(args);
+
   const installCommand = `${options.packageManager} install`;
   const mainSpinner = ora("Setting up your Web3 project...").start();
   const t0 = Date.now();
