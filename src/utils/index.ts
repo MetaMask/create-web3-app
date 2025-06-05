@@ -162,6 +162,12 @@ export const promptForOptions = async (
         )
       );
     }
+  } else if (templateId === "metamask-web3auth") {
+    console.log(
+      chalk.yellow(
+        "\nNote: The selected template requires a Web3Auth client ID. You can obtain one from https://dashboard.web3auth.io/ and later add NEXT_PUBLIC_WEB3AUTH_CLIENT_ID=<your_id> to a .env file in your site's directory."
+      )
+    );
   }
 
   const options: ProjectOptions = {
@@ -410,7 +416,6 @@ export const createFoundryProject = async (
 };
 
 export const createProject = async (args: string) => {
-  // First, ensure the current working directory is writable
   try {
     await fs.access(process.cwd(), fsConstants.W_OK);
   } catch {
