@@ -477,10 +477,6 @@ export const createProject = async (args: string) => {
       console.log("    Starts the development server.");
     }
 
-    const userGitEmail = await execAsync("git config user.email");
-
-    console.log("USER GIT EMAIL", userGitEmail)
-
     track("project_created", {
       template_id: options.templateId,
       blockchain_tooling: options.blockchain_tooling,
