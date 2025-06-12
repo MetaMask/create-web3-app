@@ -440,7 +440,7 @@ export const createFoundryProject = async (
   console.log("Initializing Foundry project with 'forge init'...");
   const blockchainPath = path.join(projectName, "packages", "blockchain");
   await fs.mkdir(blockchainPath, { recursive: true });
-  await execAsync(`cd ${blockchainPath} && forge init . --no-git`);
+  await execAsync(`cd ${blockchainPath} && foundryup && forge init . --no-git`);
 
   await cloneTemplate(
     {
