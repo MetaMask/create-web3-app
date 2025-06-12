@@ -25,7 +25,7 @@ export const BLOCKCHAIN_TOOLING_CHOICES = [
   },
 ] as const;
 
-export const PACAKGE_MANAGER_CHOICES = [
+export const PACKAGE_MANAGER_CHOICES = [
   {
     name: "Yarn",
     value: "yarn",

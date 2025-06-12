@@ -2,7 +2,7 @@ import { exec } from "child_process";
 import { promises as fs, constants as fsConstants } from "fs";
 import {
   BLOCKCHAIN_TOOLING_CHOICES,
-  PACAKGE_MANAGER_CHOICES,
+  PACKAGE_MANAGER_CHOICES,
   TEMPLATES,
   isDegitTemplate,
   isGitTemplate,
@@ -74,7 +74,7 @@ const promptForBlockchainTooling = async (): Promise<string> => {
 };
 
 const promptForPackageManager = async (): Promise<string> => {
-  const packageManagerChoice = PACAKGE_MANAGER_CHOICES.map(
+  const packageManagerChoice = PACKAGE_MANAGER_CHOICES.map(
     (choice) => choice.name
   );
   const { packageManager }: { packageManager: string } = await inquirer.prompt([
@@ -217,7 +217,7 @@ export const promptForOptions = async (
     blockchain_tooling: BLOCKCHAIN_TOOLING_CHOICES.find(
       (choice) => choice.name === tooling
     )?.value as ProjectOptions["blockchain_tooling"],
-    packageManager: PACAKGE_MANAGER_CHOICES.find(
+    packageManager: PACKAGE_MANAGER_CHOICES.find(
       (choice) => choice.name === packageManager
     )?.value as ProjectOptions["packageManager"],
     dynamicEnvId: dynamicEnvId,

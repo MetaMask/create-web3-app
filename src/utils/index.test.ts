@@ -9,7 +9,7 @@ import * as utils from "./index.js"; // Import all exports
 import {
   TEMPLATES,
   BLOCKCHAIN_TOOLING_CHOICES,
-  PACAKGE_MANAGER_CHOICES,
+  PACKAGE_MANAGER_CHOICES,
   GitTemplate, // Import type for clarity
   DegitTemplate, // Import type for clarity
 } from "../constants/index.js";
@@ -86,7 +86,7 @@ describe("create-web3-app Utils", () => {
       const mockArgs = "my-test-project";
       const mockTemplate = TEMPLATES[0]; // Use the first template
       const mockTooling = BLOCKCHAIN_TOOLING_CHOICES[0];
-      const mockPackageManager = PACAKGE_MANAGER_CHOICES[0];
+      const mockPackageManager = PACKAGE_MANAGER_CHOICES[0];
       const mockAnswers = {
         frameworkName: mockTemplate.name,
         tooling: mockTooling.name,
@@ -110,7 +110,7 @@ describe("create-web3-app Utils", () => {
       const mockProjectName = "prompted-project";
       const mockTemplate = TEMPLATES[1]; // Use second template
       const mockTooling = BLOCKCHAIN_TOOLING_CHOICES[1];
-      const mockPackageManager = PACAKGE_MANAGER_CHOICES[1];
+      const mockPackageManager = PACKAGE_MANAGER_CHOICES[1];
        const mockAnswers = {
         projectName: mockProjectName,
         frameworkName: mockTemplate.name,
