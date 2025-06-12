@@ -49,7 +49,7 @@ const promptForFramework = async (): Promise<string> => {
   return selectedTemplate.id;
 };
 
-const promptForTooling = async (): Promise<string> => {
+const promptForBlockchainTooling = async (): Promise<string> => {
   const toolingChoice = BLOCKCHAIN_TOOLING_CHOICES.map((choice) => choice.name);
   const { tooling }: { tooling: string } = await inquirer.prompt([
     {
@@ -167,7 +167,7 @@ export const promptForOptions = async (
 ): Promise<ProjectOptions> => {
   const projectName = await promptForProjectDetails(args);
   const templateId = await promptForFramework();
-  const tooling = await promptForTooling();
+  const tooling = await promptForBlockchainTooling();
   const packageManager = await promptForPackageManager();
 
   let dynamicEnvId: string | undefined = undefined;
@@ -440,7 +440,7 @@ export const createFoundryProject = async (
   console.log("Initializing Foundry project with 'forge init'...");
   const blockchainPath = path.join(projectName, "packages", "blockchain");
   await fs.mkdir(blockchainPath, { recursive: true });
-  await execAsync(`cd ${blockchainPath} && forge init . --no-commit`);
+  await execAsync(`cd ${blockchainPath} && forge init . --no-git`);
 
   await cloneTemplate(
     {
