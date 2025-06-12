@@ -53,4 +53,4 @@ export function isGitTemplate(template: Template): template is GitTemplate {
   return "repo_url" in template;
 }
 
-export const CLI_VERSION = "1.1.3";
+export const CLI_VERSION = "1.1.5";
