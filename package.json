@@ -1,15 +1,16 @@
 {
-  "name": "@metamask/create-web3-app",
+  "name": "@consensys/create-web3-app",
   "type": "module",
   "module": "dist/index.js",
   "bin": {
     "create-web3-app": "dist/index.js"
   },
-  "version": "1.0.0",
+  "version": "1.1.5",
   "description": "CLI tool for generating Web3 starter projects, streamlining the setup of monorepo structures with a frontend (Next.js or React) and blockchain tooling (HardHat or Foundry). It leverages the commander library for command-line interactions and guides users through selecting a framework, package manager (npm, yarn, pnpm), and blockchain stack.",
   "main": "index.js",
   "scripts": {
     "dev": "tsc -w",
+    "build": "tsc",
     "link-cli": "yarn unlink --global create-web3-app && yarn link --global create-web3-app",
     "test": "vitest"
   },
@@ -26,10 +27,17 @@
   "author": "cxalem",
   "license": "MIT",
   "dependencies": {
+    "@segment/analytics-node": "^2.2.1",
+    "@types/degit": "^2.8.6",
+    "chalk": "^5.4.1",
     "commander": "12.0.0",
+    "degit": "^2.8.4",
+    "dotenv": "^16.5.0",
     "fs": "0.0.1-security",
     "inquirer": "9.2.15",
-    "memfs": "^4.9.3"
+    "memfs": "^4.9.3",
+    "ora": "^8.2.0",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
     "@types/inquirer": "9.0.7",
@@ -40,6 +48,10 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MetaMask/create-web3-app.git"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "bugs": {
     "url": "https://github.com/MetaMask/create-web3-app/issues"

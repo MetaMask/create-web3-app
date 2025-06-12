@@ -1,13 +1,15 @@
+import { execAsync } from "../utils/index.js";
+import { TEMPLATES } from "./templates.js";
+
+export { TEMPLATES } from "./templates.js";
+
 export const FRAMEWORK_CHOICES = [
   {
-    name: "React (with Vite)",
-    value: "react",
-  },
-  {
     name: "Next.js",
-    value: "nextjs",
+    value: "next-web3-starter",
   },
 ] as const;
+
 export const BLOCKCHAIN_TOOLING_CHOICES = [
   {
     name: "HardHat",
@@ -23,7 +25,7 @@ export const BLOCKCHAIN_TOOLING_CHOICES = [
   },
 ] as const;
 
-export const PACAKGE_MANAGER_CHOICES = [
+export const PACKAGE_MANAGER_CHOICES = [
   {
     name: "Yarn",
     value: "yarn",
@@ -38,17 +40,27 @@ export const PACAKGE_MANAGER_CHOICES = [
   },
 ] as const;
 
-export const NPM_COMMAND = (projectName: string, path: string) =>
-  path
-    ? `cd ${path} && npm init vite@latest . -- --template react-ts`
-    : `npm init vite@latest ${projectName} -- --template react-ts`;
+// Add a type helper to make working with templates easier
+type Template = (typeof TEMPLATES)[number];
 
-export const YARN_COMMAND = (projectName: string, path: string) =>
-  path
-    ? `cd ${path} && yarn create vite . --template react-ts`
-    : `yarn create vite ${projectName} --template react-ts`;
+export type GitTemplate = Extract<Template, { repo_url: string }>;
+export type DegitTemplate = Extract<Template, { degitSource: string }>;
 
-export const PNPM_COMMAND = (projectName: string, path: string) =>
-  path
-    ? `cd ${path} && pnpm create vite . --template react-ts`
-    : `pnpm create vite ${projectName} --template react-ts`;
+export function isDegitTemplate(template: Template): template is DegitTemplate {
+  return "degitSource" in template;
+}
+
+export function isGitTemplate(template: Template): template is GitTemplate {
+  return "repo_url" in template;
+}
+
+export const isGitAvailable = async (): Promise<boolean> => {
+  try {
+    await execAsync("git --version");
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export const CLI_VERSION = "1.1.5";

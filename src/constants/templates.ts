@@ -1,14 +1,19 @@
 export const TEMPLATES = [
   {
-    name: "Next Web3 Starter",
-    id: "next-web3-starter",
-    repo_url: "https://github.com/Consensys/next-web3-starter.git",
-    packageName: "@consensys/web3-starter",
+    name: "MetaMask <-> Next.js Wagmi Quickstart",
+    id: "metamask-nextjs-wagmi",
+    degitSource: "MetaMask/metamask-sdk-examples/examples/quickstart",
   },
   {
-    name: "React Web3 Starter",
-    id: "react-web3-starter",
-    repo_url: "https://github.com/Consensys/react-web3-starter.git",
-    packageName: "@consensys/react-web3-starter",
+    name: "MetaMask <-> Web3Auth Quickstart",
+    id: "metamask-web3auth",
+    repo_url: "https://github.com/MetaMask/metamask-web3auth.git",
+    packageName: "metamask-web3auth",
+  },
+  {
+    name: "MetaMask <-> Dynamic Quickstart",
+    id: "metamask-dynamic",
+    repo_url: "https://github.com/MetaMask/metamask-dynamic.git",
+    packageName: "metamask-dynamic",
   },
 ] as const;

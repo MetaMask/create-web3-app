@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+import "dotenv/config";
+
 import { Command } from "commander";
 import { createProject } from "./utils/index.js";
 

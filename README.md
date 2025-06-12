@@ -21,13 +21,13 @@ To create a new project using the Web3 Template CLI, run one of the following co
 Using **pnpm**:
 
 ```bash
-pnpm create @metamask/create-web3-app [project-name]
+pnpm create @consensys/create-web3-app [project-name]
 ```
 
 Using **npx**:
 
 ```bash
-npx @metamask/create-web3-app [project-name]
+npx @consensys/create-web3-app [project-name]
 ```
 
 ### Interactive Setup
@@ -42,7 +42,7 @@ After running the command, the CLI will guide you through the setup process with
 ### Example
 
 ```bash
-npx @metamask/create-web3-app my-web3-project
+npx @consensys/create-web3-app my-web3-project
 ```
 
 ## Project Structure
