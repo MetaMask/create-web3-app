@@ -532,8 +532,11 @@ export const createProject = async (args: string) => {
       console.log("      Compiles the smart contracts.");
       console.log(`    ${options.packageManager} run test`);
       console.log("      Runs the contract tests.");
+      console.log(`\n  In packages/site:`);
+      console.log(`    ${options.packageManager} run dev`);
+      console.log("      Runs the frontend development server.");
     } else {
-      console.log(`\n  cd packages/site && ${options.packageManager} run dev`);
+      console.log(`\n  cd ${options.projectName} && ${options.packageManager} run dev`);
       console.log("    Starts the development server.");
     }
 
