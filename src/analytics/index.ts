@@ -14,6 +14,7 @@ type EVENTS =
   | "cli_started"
   | "project_creation_failed"
   | "foundry_not_installed"
+  | "git_not_installed"
   | "cwd_not_writable";
 
 const analytics = enabled

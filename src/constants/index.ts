@@ -1,3 +1,4 @@
+import { execAsync } from "../utils/index.js";
 import { TEMPLATES } from "./templates.js";
 
 export { TEMPLATES } from "./templates.js";
@@ -52,5 +53,14 @@ export function isDegitTemplate(template: Template): template is DegitTemplate {
 export function isGitTemplate(template: Template): template is GitTemplate {
   return "repo_url" in template;
 }
+
+export const isGitAvailable = async (): Promise<boolean> => {
+  try {
+    await execAsync("git --version");
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 export const CLI_VERSION = "1.1.5";

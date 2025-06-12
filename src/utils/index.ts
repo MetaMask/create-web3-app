@@ -7,6 +7,7 @@ import {
   isDegitTemplate,
   isGitTemplate,
   CLI_VERSION,
+  isGitAvailable,
 } from "../constants/index.js";
 import path from "path";
 import util from "util";
@@ -245,6 +246,19 @@ export const cloneTemplate = async (
   const spinner = ora(
     `Preparing template "${template.name}" into ${destinationPath}...`
   ).start();
+
+  if (!(await isGitAvailable())) {
+    spinner.fail("Git is not installed or not found in your PATH.");
+
+    track("git_not_installed", {
+      destination_path: destinationPath,
+      template_id: templateId,
+    });
+
+    throw new Error(
+      "Git is required to clone templates. Please install Git (https://git-scm.com/downloads) and try again."
+    );
+  }
 
   try {
     if (isDegitTemplate(template)) {
